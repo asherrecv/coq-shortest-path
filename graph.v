@@ -98,7 +98,7 @@ Proof.
   destruct HSP_vup as [HP_vup HSP_vup].
   apply HSP_vup in HE_uv.
   omega.
-  auto.
+  assumption.
 Qed.
 
 End GRAPH.
