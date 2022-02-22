@@ -1,19 +1,19 @@
-In diesem Kapitel überlegen wir uns, wie der verteilten Bellman-Ford-Algorithmus zertifizierend gestaltet werden kann. Dazu erläutern wir zuerst ein bekannte Zeugeneigenschaft für das Kürzeste-Pfade-Problem mit einer Quelle in der sequentiellem Umgebung. Im darauf folgenden Abschnitt überlegen wir uns, wie der lokale Ansatz auf das Problem angewendet werden kann. 
+
 
 Sei im weiteren Verlauf des Kapitels $G=(V,E,s)$ ein ungerichteter, zusammenhängender Graph mit einem ausgezeichneten Startknoten $s\in V$. Weiterhin sei $c:E\to \mathbb{N}_{>0}$ eine Kantenbewertungsfunktion. 
 
 
-	Ein Pfad $p$ von einem Knoten $s\in V$ zu einem Knoten $t\in V$ ist eine Folge von Knoten $(v_1,\ldots, v_n)$, so dass $v_1=s$, $v_n=t$ und $\{v_i,v_{i+1}\}\in E$ für alle $1\leq i \leq n-1$.
+Ein Pfad $p$ von einem Knoten $s\in V$ zu einem Knoten $t\in V$ ist eine Folge von Knoten $(v_1,\ldots, v_n)$, so dass $v_1=s$, $v_n=t$ und $\{v_i,v_{i+1}\}\in E$ für alle $1\leq i \leq n-1$.
 
-	Die Pfadkosten eines Pfades $p=(v_1,\ldots,v_n)$ entsprechen der Summe der Kantengewichte entlang des Pfades, also dem Wert $\sum_{1\leq i \leq n -1 } c\left(\{v_i,v_{i+1}\}\right)$.
+Die Pfadkosten eines Pfades $p=(v_1,\ldots,v_n)$ entsprechen der Summe der Kantengewichte entlang des Pfades, also dem Wert $\sum_{1\leq i \leq n -1 } c\left(\{v_i,v_{i+1}\}\right)$.
 
-	Die Funktion $\delta: V\to \mathbb{N}_{\geq 0}$ mit der Eigenschaft $\delta(v)=\min\{ \text{Pfadkosten von \(p\)} \mid p \text{Pfad von \(s\) nach \(v\)}\}$ für alle $v\in V$, heißt Kürzeste"=Wege"=Funktion des Graphen $G$.
+Die Funktion $\delta: V\to \mathbb{N}_{\geq 0}$ mit der Eigenschaft $\delta(v)=\min\{ \text{Pfadkosten von \(p\)} \mid \text{\(p\) Pfad von \(s\) nach \(v\)}\}$ für alle $v\in V$, heißt Kürzeste-Wege-Funktion des Graphen $G$.
 
-\section{Überprüfung einer Kürzesten-Wege-Funktion}
+# Überprüfung einer Kürzesten-Wege-Funktion
 
 Ein Algorithmus zur Lösung des Kürzesten-Pfade-Problems mit einer Quelle, wie beispielsweise der Dijkstra-Algorithmus, berechnet einen Spannbaum mit der Quelle als Wurzel. Der Weg von der Wurzel zu einem Knoten des Spannbaums, hat minimale Pfadkosten. Der Spannbaum ist nicht notwendigerweise eindeutig. Aus dem Spannbaum lässt sich jedoch eine eindeutige Funktion $D:V\to \mathbb{N}_{\geq 0}$ ableiten. Die Funktionswerte entsprechen den Pfadkosten eines kürzesten Pfades. Wir beschränken uns zunächst darauf, wie diese Funktion auf ihre Korrektheit überprüft werden kann. 
 
-\subsection{Zeugeneigenschaft}
+# Zeugeneigenschaft
 
 Eine Funktion $D:V\to \mathbb{N}_{\geq 0}$ kann einfach darauf überprüft werden, ob sie tatsächlich identisch mit der Kürzeste-Wege-Funktion für den Graph $G$ ist. Dazu muss die Ausgabe $D$ lediglich auf drei Eigenschaften überprüft werden. In diesem Fall fällt der Zeuge mit der Ausgabe zusammen. Das heißt es bedarf zur Überprüfung der Ergebniskorrektheit, keines zusätzlichen mathematisches Artefakts, welches als Zeuge fungiert.
 $$
@@ -33,7 +33,7 @@ $$
 	Wir zeigen zwei Richtungen, die Zusammen die Gleichheit belegen.
 $$
 	\begin{description}
-		\item[$\bm{D(v)\leq \delta(v)}$] Der Beweis erfolgt per Induktion über die Pfadlänge eines kürzesten Pfades.
+		\item[\(\bm{D(v)\leq \delta(v)}\)] Der Beweis erfolgt per Induktion über die Pfadlänge eines kürzesten Pfades.
 		\begin{description}
 			\item[Induktionsanfang] Ein Pfad der Länge eins, besteht nur aus dem Startknoten $s$ selbst. Dieser ist auch der eindeutige kürzeste Pfad, da aufgrund der positiven Kantengewichte alle längeren Pfade positive Kosten haben. Daraus und der Starteigenschaft folgt, dass $D(s)=\delta(s)=0$.
 			\item[Induktionsschritt] Wir haben einen kürzesten Pfad $(v_1,\ldots,v_{i+1})$ der Länge $i+1$. Wir nehmen an, dass für Pfade der Länge $i$ gilt, dass $D(v_i)\leq \delta(v_i)$. Weiterhin gilt wegen der optimalen Substruktur von kürzesten Pfaden, dass $\delta(v_{i+1})=\delta(v_i)+c(\{v_i,v_{i+1}\})$.
