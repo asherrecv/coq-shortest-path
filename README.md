@@ -54,6 +54,14 @@ Gemäß dem lokalen Ansatz, erfolgt die Überprüfung des verteilten Ergebnisses
 
 <p align="center"><img src="https://raw.githubusercontent.com/asherrecv/coq-shortest-path/readme/svgs/919ac95dfdac9aabc7fcc229ec5ae0ad.svg?invert_in_darkmode" align=middle width=563.52766965pt height=145.30036619999998pt/></p>
 
+<p align="center"><img src="https://raw.githubusercontent.com/asherrecv/coq-shortest-path/readme/svgs/2710e471f3fa7dd42d2323e2beb3f4ea.svg?invert_in_darkmode" align=middle width=389.74100055pt height=16.438356pt/></p>  
+
+
+
+Mit der Formalisierung von Knoten als Terme vom Typ \lstinline|set n|, definieren wir auf folgende Weise den Record \lstinline|graph|, zur Repräsentation eines endlichen, gewichteten Graphen:
+
+<p align="center"><img src="https://raw.githubusercontent.com/asherrecv/coq-shortest-path/readme/svgs/1304a766af614c1ede7ff99bffdb2b67.svg?invert_in_darkmode" align=middle width=313.55823839999994pt height=95.34246644999999pt/></p>
+
 # References
 <a id="1">[1]</a>
 R.M. McConnell, K. Mehlhorn, S. Näher und P. Schweitzer: Certifying

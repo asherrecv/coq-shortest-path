@@ -93,6 +93,22 @@ Gemäß dem lokalen Ansatz, erfolgt die Überprüfung des verteilten Ergebnisses
     \draw (B) to node[above] {$8$} (E);
 \end{tikzpicture}
 
+\begin{lstlisting}
+Definition set n := { x : nat | x < n }.
+\end{lstlisting}  
+
+
+
+Mit der Formalisierung von Knoten als Terme vom Typ \lstinline|set n|, definieren wir auf folgende Weise den Record \lstinline|graph|, zur Repräsentation eines endlichen, gewichteten Graphen:
+
+\begin{lstlisting}
+Record graph : Set := mk_graph {
+  V : nat;
+  E : (set V) -> (set V) -> nat;
+  s : (set V)
+}.
+\end{lstlisting}
+
 # References
 <a id="1">[1]</a>
 R.M. McConnell, K. Mehlhorn, S. Näher und P. Schweitzer: Certifying
