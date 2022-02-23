@@ -6,7 +6,7 @@ _Definition_ (__Pfad__) Ein Pfad $p$ von einem Knoten $s\in V$ zu einem Knoten $
 
 _Definition_ (__Pfadkosten__) Die Pfadkosten eines Pfades $p=(v_1,\ldots,v_n)$ entsprechen der Summe der Kantengewichte entlang des Pfades, also dem Wert $\sum_{1\leq i \leq n -1 } c\left(\{v_i,v_{i+1}\}\right)$.
 
-_Definition_ (__Kürzeste-Wege-Funtion__) Die Funktion $\delta: V\to \mathbb{N}_{\geq 0}$ mit der Eigenschaft $\delta(v)=\min\{ \text{Pfadkosten von \(p\)} \mid \text{\(p\) Pfad von \(s\) nach \(v\)}\}$ für alle $v\in V$, heißt Kürzeste-Wege-Funktion des Graphen $G$.
+_Definition_ (__Kürzeste-Wege-Funtion__) Eine Funktion $\delta: V\to \mathbb{N}_{\geq 0}$ heißt Kürzeste-Wege-Funktion des Graphen $G$, wenn $\delta(v)=\min\{ \text{Pfadkosten von \(p\)} \mid \text{\(p\) Pfad von \(s\) nach \(v\)}\}$ für alle $v\in V$,
 
 # Überprüfung einer Kürzesten-Wege-Funktion
 
