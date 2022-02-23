@@ -4,7 +4,9 @@ Eine herausfordernde Aufgabe des Software Engineering ist es die Korrektheit ein
 
 Mehlhorn et. al. [[1]](#1) schlagen das Konzept des _zertifizierenden Algorithmus_ als weiteren Ansatz zur Qualitätssicherung von Software vor. Ein zertifizierender Algorithmus berechnet zu jedem Ergebnis, ein einfach zu überprüfendes Zertifikat, welches die Korrektheit des Ergebnisses impliziert. Der Benutzer eines zertifizierenden Algorithmus, kann sich anhand des Zertifikats von der Korrektheit des Ergebnisses überzeugen. Die Zertifikatsüberprüfung kann durch einen  Entscheidungsalgorithmus -- dem Checker erfolgen. Auf diese Weise kann der Benutzer Gewissheit über die Korrektheit des Ergebnisses erlangen, ohne dem Algorithmus vertrauen zu müssen. 
 
-Rizkallah [[2]](#2) entwickelt aufbauend auf dem Konzept des zertifizierenden Algorithmus, den Begriff der _formalen Instanzkorrektheit_. Die Idee ist es die Aussage "`der Checker akzeptiert ein Zertifikat für ein Ergebnis genau dann, wenn das Ergebnis korrekt ist"' mit Methoden der formalen Verifikation zu belegen. Der formale Beweise der Aussage erfolgt über zwei Schritte: Als erstes wird bewiesen, dass Zertifikate immer die Korrektheit eines Ergebnisses implizieren. Der nächste Schritt bildet der Korrektheitsbeweis der Checker"=Implementation. Die Korrektheit des Ergebnisses ist damit -- bei Akzeptanz des Checkers -- durch einen maschinenüberprüfbaren Beweis abgesichert und so vertrauenswürdig, als wäre die Berechnung von einen formal verifizierten Algorithmus erfolgt.
+Rizkallah [[2]](#2) entwickelt aufbauend auf dem Konzept des zertifizierenden Algorithmus, den Begriff der _formalen Instanzkorrektheit_. Die Idee ist es die Aussage "der Checker akzeptiert ein Zertifikat für ein Ergebnis genau dann, wenn das Ergebnis korrekt ist" mit Methoden der formalen Verifikation zu belegen. Der formale Beweise der Aussage erfolgt über zwei Schritte: Als erstes wird bewiesen, dass Zertifikate immer die Korrektheit eines Ergebnisses implizieren. Der nächste Schritt bildet der Korrektheitsbeweis der Checker"=Implementation. Die Korrektheit des Ergebnisses ist damit -- bei Akzeptanz des Checkers -- durch einen maschinenüberprüfbaren Beweis abgesichert und so vertrauenswürdig, als wäre die Berechnung von einen formal verifizierten Algorithmus erfolgt.
+
+In [[3]](#3) veschreibt Völlinger, wie ein verteilter Netzwerkalgorithmus zur Berechnung kürzester Pfade, zertifizierend gestaltet werden kann. Jede Komponente des Netzwerks berechnet ein lokales Zertifikat, sodass alle lokalen Zertifikate zusammen die Korrektheit des verteilten Ergebnisses belegen. Die Überprüfung des verteilten Ergebnisses, erfolgt ebenfalls verteilt durch lokale Checker, welche jeder Komponente zugewiesen werden. Das verteilte Ergebnis ist genau dann korrekt, wenn alle lokalen Checker akzeptieren. Völlinger bezeichnet dieses Vorgehen als den _lokalen Ansatz_. 
 
 
 # Definitionen
@@ -52,3 +54,8 @@ algorithms. Computer Science Review, 5(2):119 – 161, 2011.
 <a id="2">[2]</a>
 Christine Rizkallah: Verification of Program Computations. Dissertation,
 Universität des Saarlandes, Saarbrücken, 2015.
+
+<a id="3">[3]</a>
+Kim Völlinger und Wolfgang Reisig: Certifcation of Distributed Algorithms
+Solving Problems with Optimal Substructure. In: Software Engineering and
+Formal Methods, 2015.
