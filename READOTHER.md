@@ -6,7 +6,7 @@ _Definition_ (__Pfad__) Ein Pfad $p$ von einem Knoten $s\in V$ zu einem Knoten $
 
 _Definition_ (__Pfadkosten__) Die Pfadkosten eines Pfades $p=(v_1,\ldots,v_n)$ entsprechen der Summe der Kantengewichte entlang des Pfades, also dem Wert $\sum_{1\leq i \leq n -1 } c\left(\{v_i,v_{i+1}\}\right)$.
 
-_Definition_ (__Kürzeste-Wege-Funtion__) Eine Funktion $\delta: V\to \mathbb{N}_{\geq 0}$ heißt Kürzeste-Wege-Funktion des Graphen $G$, wenn $\delta(v)=\min\{ \text{Pfadkosten von \(p\)} \mid \text{\(p\) Pfad von \(s\) nach \(v\)}\}$ für alle $v\in V$,
+_Definition_ (__Kürzeste-Wege-Funktion__) Eine Funktion $\delta: V\to \mathbb{N}_{\geq 0}$ heißt Kürzeste-Wege-Funktion des Graphen $G$, wenn $\delta(v)=\min\{ \text{Pfadkosten von \(p\)} \mid \text{\(p\) Pfad von \(s\) nach \(v\)}\}$ für alle $v\in V$,
 
 # Überprüfung einer Kürzesten-Wege-Funktion
 
@@ -54,3 +54,20 @@ Wir zeigen zwei Richtungen, die zusammen die Gleichheit belegen.
         \end{align*}
      was ein Widerspruch zur Annahme darstellt.
 \end{itemize}
+
+Gemäß dem lokalen Ansatz, erfolgt die Überprüfung des verteilten Ergebnisses mithilfe lokal berechneter Zeugen durch lokale Checker. Wie kann das Ergebnis des verteilten Bellman-Ford-Algorithmus auf Korrektheit überprüft werden? Wir beobachten, dass zur Feststellung der Gültigkeit der Dreiecksungleichung und der Ausgleichseigenschaft, ausschließlich die Funktionswerte der Nachbarschaft benötigt werden. Die Feststellung der Starteigenschaft benötigt keine zusätzliche Information. Dies motiviert die Definition des lokalen Zeugen einer Komponente, als die Menge der berechneten Werte der Nachtbarschaft. Dieser wird vom  lokale Checker zur Teilüberprüfung des globalen Ergebnisses verwendet. Beispielsweise hält nach der Ausführung des zertifizierenden verteilten Bellman"=Ford"=Algorithmus auf dem Netzwerk aus Abbildung, die Komponente $e$ die Werte $y_b$ und $y_c$ als lokalen Zeugen. Der Checker der Komponente $e$ muss überprüfen, ob die Dreiecksungleichung und Ausgleichseigenschaft in der Nachbarschaft erfüllt sind. Die Überprüfung der Starteigenschaft entfällt, da $e$ nicht die Quelle ist. Zur Überprüfung der Dreiecksungleichung müssen die Ungleichungen $y_d \leq y_b +8$ und $y_d \leq y_c + 1$ überprüft werden. Weiterhin muss der lokale Checker zur Überprüfung der Ausgleichseigenschaft feststellen, ob eine der Ungleichung tatsächlich eine Gleichheit ist. Hier stellt er fest, dass $y_d = y_c + 1$.
+
+	\begin{tikzpicture}%[every node/.style={fill,circle,inner sep=1pt}]
+	\node [label=left:{$\{y_a \mapsto 0, y_c \mapsto 5\}$}] (D) at (-4.0, -1) [circle,draw] {$d$};
+	\node [label=left:{$\{y_b \mapsto 2, y_c \mapsto 5, y_d \mapsto 7\}$}] (A) at (-2.5, +1) [circle,draw] {$a$};
+	\node [label=below:{$\{y_a \mapsto 0, y_b \mapsto 2, y_d \mapsto 7, y_e \mapsto 6\}$}](C) at (-1.0, -1) [circle,draw] {$c$};
+	\node [label=right:{$\{y_a \mapsto 0, y_c \mapsto 5, y_e \mapsto 6\}$}] (B) at (+0.5, +1) [circle,draw] {$b$};
+	\node [label=right:{$\{y_b \mapsto 2, y_c \mapsto 5\}$}] (E) at (+2.0, -1) [circle,draw] {$e$};
+	\draw (D) to node[above] {$10$} (A);
+	\draw (D) to node[above] {$2$} (C);
+	\draw (A) to node[above] {$5$} (C);
+	\draw (A) to node[above] {$2$} (B);
+	\draw (C) to node[above] {$1$} (E);
+	\draw (C) to node[above] {$3$} (B);
+	\draw (B) to node[above] {$8$} (E);
+	\end{tikzpicture}
