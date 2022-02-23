@@ -1,3 +1,4 @@
+# Definitionen
 
 Sei $G=(V,E,s)$ ein ungerichteter, zusammenhängender Graph mit einem ausgezeichneten Startknoten $s\in V$ und $c:E\to \mathbb{N}_{>0}$ eine Kantenbewertungsfunktion.
 
@@ -13,7 +14,8 @@ Ein Algorithmus zur Lösung des Kürzesten-Pfade-Problems mit einer Quelle, wie 
 
 # Zeugeneigenschaft
 
-Eine Funktion $D:V\to \mathbb{N}_{\geq 0}$ kann einfach darauf überprüft werden, ob sie tatsächlich identisch mit der Kürzeste-Wege-Funktion für den Graph $G$ ist. Dazu muss die Ausgabe $D$ lediglich auf drei Eigenschaften überprüft werden. In diesem Fall fällt der Zeuge mit der Ausgabe zusammen. Das heißt es bedarf zur Überprüfung der Ergebniskorrektheit, keines zusätzlichen mathematisches Artefakts, welches als Zeuge fungiert.
+Eine Funktion $D:V\to \mathbb{N}_{\geq 0}$ kann einfach darauf überprüft werden, ob sie eine Kürzeste-Wege-Funktion für den Graph $G$ ist. Dafür ist es hinreichend, $D$ auf drei Eigenschaften zu überprüfen. 
+Das heißt es bedarf zur Überprüfung der Ergebniskorrektheit, keines zusätzlichen mathematisches Artefakts, welches als Zeuge fungiert -- die Ausgabe zertifiziert sich gewissermaßen selbst.
 
 \begin{align*}
     D(s)                                                                & = 0                  & \text{\footnotesize(Starteigenschaft)}      \\
