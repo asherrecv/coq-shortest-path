@@ -1,6 +1,5 @@
 
-Sei $G=(V,E,s)$ ein ungerichteter, zusammenhängender Graph mit einem ausgezeichneten Startknoten $s\in V$. Weiterhin sei $c:E\to \mathbb{N}_{>0}$ eine Kantenbewertungsfunktion. 
-
+Sei $G=(V,E,s)$ ein ungerichteter, zusammenhängender Graph mit einem ausgezeichneten Startknoten $s\in V$ und $c:E\to \mathbb{N}_{>0}$ eine Kantenbewertungsfunktion.
 
 _Definition_ (__Pfad__) Ein Pfad $p$ von einem Knoten $s\in V$ zu einem Knoten $t\in V$ ist eine Folge von Knoten $(v_1,\ldots, v_n)$, so dass $v_1=s$, $v_n=t$ und $\{v_i,v_{i+1}\}\in E$ für alle $1\leq i \leq n-1$.
 
