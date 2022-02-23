@@ -13,6 +13,7 @@ In [[3]](#3) veschreibt Völlinger, wie ein verteilter Netzwerkalgorithmus zur B
 
 Dieses Repository enthält die Coq-Formalisierung der formlalen Insztanzkorrektheit der verteilten Überprüfung eines verteilten Netzwerkalgorithmus zur Berechnung kürzester Pfade. Die Abschnitte "Zeugeneigenschaft" und "Verteilte Zeugeneigenschaft" enthalten im Wesentlichen die Beweise, welche hier in Coq formalisiert wurden.
 
+# Überprüfung einer Kürzesten-Wege-Funktion
 
 ## Definitionen
 
@@ -26,10 +27,6 @@ _Definition_ (__Kürzeste-Wege-Funktion__) Eine Funktion <img src="https://raw.g
 
 
 ## Zeugeneigenschaft
-
-### Überprüfung einer Kürzesten-Wege-Funktion
-
-Ein Algorithmus zur Lösung des Kürzesten-Pfade-Problems mit einer Quelle, wie beispielsweise der Dijkstra-Algorithmus, berechnet einen Spannbaum mit der Quelle als Wurzel. Der Weg von der Wurzel zu einem Knoten des Spannbaums, hat minimale Pfadkosten. Der Spannbaum ist nicht notwendigerweise eindeutig. Aus dem Spannbaum lässt sich jedoch eine eindeutige Funktion <img src="https://raw.githubusercontent.com/asherrecv/coq-shortest-path/readme/svgs/e6487508e51e0bed72a8f920e2cbc39a.svg?invert_in_darkmode" align=middle width=95.27603084999998pt height=22.648391699999998pt/> ableiten. Die Funktionswerte entsprechen den Pfadkosten eines kürzesten Pfades. Wir beschränken uns zunächst darauf, wie diese Funktion auf ihre Korrektheit überprüft werden kann. 
 
 Eine Funktion <img src="https://raw.githubusercontent.com/asherrecv/coq-shortest-path/readme/svgs/e6487508e51e0bed72a8f920e2cbc39a.svg?invert_in_darkmode" align=middle width=95.27603084999998pt height=22.648391699999998pt/> kann einfach darauf überprüft werden, ob sie eine Kürzeste-Wege-Funktion für den Graph <img src="https://raw.githubusercontent.com/asherrecv/coq-shortest-path/readme/svgs/5201385589993766eea584cd3aa6fa13.svg?invert_in_darkmode" align=middle width=12.92464304999999pt height=22.465723500000017pt/> ist. Dafür ist es hinreichend, <img src="https://raw.githubusercontent.com/asherrecv/coq-shortest-path/readme/svgs/78ec2b7008296ce0561cf83393cb746d.svg?invert_in_darkmode" align=middle width=14.06623184999999pt height=22.465723500000017pt/> auf drei Eigenschaften zu überprüfen. 
 Das heißt es bedarf zur Überprüfung der Ergebniskorrektheit, keines zusätzlichen mathematisches Artefakts, welches als Zeuge fungiert -- die Ausgabe zertifiziert sich gewissermaßen selbst.
@@ -46,7 +43,10 @@ Wir zeigen zwei Richtungen, die zusammen die Gleichheit belegen.
 
 <p align="center"><img src="https://raw.githubusercontent.com/asherrecv/coq-shortest-path/readme/svgs/1378da8be642e842fdc565c26a522609.svg?invert_in_darkmode" align=middle width=675.6150686999999pt height=577.7168991pt/></p>
 
-# Verteilte Zeugeneigenschaft
+
+Ein Algorithmus zur Lösung des Kürzesten-Pfade-Problems mit einer Quelle, wie beispielsweise der Dijkstra-Algorithmus, berechnet einen Spannbaum mit der Quelle als Wurzel. Der Weg von der Wurzel zu einem Knoten des Spannbaums, hat minimale Pfadkosten. Der Spannbaum ist nicht notwendigerweise eindeutig. Aus dem Spannbaum lässt sich jedoch eine eindeutige Funktion <img src="https://raw.githubusercontent.com/asherrecv/coq-shortest-path/readme/svgs/e6487508e51e0bed72a8f920e2cbc39a.svg?invert_in_darkmode" align=middle width=95.27603084999998pt height=22.648391699999998pt/> ableiten. Die Funktionswerte entsprechen den Pfadkosten eines kürzesten Pfades. Wir beschränken uns zunächst darauf, wie diese Funktion auf ihre Korrektheit überprüft werden kann. 
+
+# Verteilte Überpfrüfung eines Kürzesten-Wege-Netzwerks
 
 ## Motivation
 

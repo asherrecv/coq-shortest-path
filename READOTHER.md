@@ -13,6 +13,7 @@ In [[3]](#3) veschreibt Völlinger, wie ein verteilter Netzwerkalgorithmus zur B
 
 Dieses Repository enthält die Coq-Formalisierung der formlalen Insztanzkorrektheit der verteilten Überprüfung eines verteilten Netzwerkalgorithmus zur Berechnung kürzester Pfade. Die Abschnitte "Zeugeneigenschaft" und "Verteilte Zeugeneigenschaft" enthalten im Wesentlichen die Beweise, welche hier in Coq formalisiert wurden.
 
+# Überprüfung einer Kürzesten-Wege-Funktion
 
 ## Definitionen
 
@@ -26,10 +27,6 @@ _Definition_ (__Kürzeste-Wege-Funktion__) Eine Funktion $\delta: V\to \mathbb{N
 
 
 ## Zeugeneigenschaft
-
-### Überprüfung einer Kürzesten-Wege-Funktion
-
-Ein Algorithmus zur Lösung des Kürzesten-Pfade-Problems mit einer Quelle, wie beispielsweise der Dijkstra-Algorithmus, berechnet einen Spannbaum mit der Quelle als Wurzel. Der Weg von der Wurzel zu einem Knoten des Spannbaums, hat minimale Pfadkosten. Der Spannbaum ist nicht notwendigerweise eindeutig. Aus dem Spannbaum lässt sich jedoch eine eindeutige Funktion $D:V\to \mathbb{N}_{\geq 0}$ ableiten. Die Funktionswerte entsprechen den Pfadkosten eines kürzesten Pfades. Wir beschränken uns zunächst darauf, wie diese Funktion auf ihre Korrektheit überprüft werden kann. 
 
 Eine Funktion $D:V\to \mathbb{N}_{\geq 0}$ kann einfach darauf überprüft werden, ob sie eine Kürzeste-Wege-Funktion für den Graph $G$ ist. Dafür ist es hinreichend, $D$ auf drei Eigenschaften zu überprüfen. 
 Das heißt es bedarf zur Überprüfung der Ergebniskorrektheit, keines zusätzlichen mathematisches Artefakts, welches als Zeuge fungiert -- die Ausgabe zertifiziert sich gewissermaßen selbst.
@@ -72,7 +69,10 @@ Wir zeigen zwei Richtungen, die zusammen die Gleichheit belegen.
      was ein Widerspruch zur Annahme darstellt.
 \end{itemize}
 
-# Verteilte Zeugeneigenschaft
+
+Ein Algorithmus zur Lösung des Kürzesten-Pfade-Problems mit einer Quelle, wie beispielsweise der Dijkstra-Algorithmus, berechnet einen Spannbaum mit der Quelle als Wurzel. Der Weg von der Wurzel zu einem Knoten des Spannbaums, hat minimale Pfadkosten. Der Spannbaum ist nicht notwendigerweise eindeutig. Aus dem Spannbaum lässt sich jedoch eine eindeutige Funktion $D:V\to \mathbb{N}_{\geq 0}$ ableiten. Die Funktionswerte entsprechen den Pfadkosten eines kürzesten Pfades. Wir beschränken uns zunächst darauf, wie diese Funktion auf ihre Korrektheit überprüft werden kann. 
+
+# Verteilte Überpfrüfung eines Kürzesten-Wege-Netzwerks
 
 ## Motivation
 
