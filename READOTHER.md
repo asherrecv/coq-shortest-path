@@ -9,7 +9,12 @@ Rizkallah [[2]](#2) entwickelt aufbauend auf dem Konzept des zertifizierenden Al
 In [[3]](#3) veschreibt Völlinger, wie ein verteilter Netzwerkalgorithmus zur Berechnung kürzester Pfade, zertifizierend gestaltet werden kann. Jede Komponente des Netzwerks berechnet ein lokales Zertifikat, sodass alle lokalen Zertifikate zusammen die Korrektheit des verteilten Ergebnisses belegen. Die Überprüfung des verteilten Ergebnisses, erfolgt ebenfalls verteilt durch lokale Checker, welche jeder Komponente zugewiesen werden. Das verteilte Ergebnis ist genau dann korrekt, wenn alle lokalen Checker akzeptieren. Völlinger bezeichnet dieses Vorgehen als den _lokalen Ansatz_. 
 
 
-# Definitionen
+# Repository
+
+Dieses Repository enthält die Coq-Formalisierung der formlalen Insztanzkorrektheit der verteilten Überprüfung eines verteilten Netzwerkalgorithmus zur Berechnung kürzester Pfade. Die Abschnitte "Zeugeneigenschaft" und "Verteilte Zeugeneigenschaft" enthalten im Wesentlichen die Beweise, welche hier in Coq formalisiert wurden.
+
+
+## Definitionen
 
 Sei $G=(V,E,s)$ ein ungerichteter, zusammenhängender Graph mit einem ausgezeichneten Startknoten $s\in V$ und $c:E\to \mathbb{N}_{>0}$ eine Kantenbewertungsfunktion.
 
@@ -19,11 +24,12 @@ _Definition_ (__Pfadkosten__) Die Pfadkosten eines Pfades $p=(v_1,\ldots,v_n)$ e
 
 _Definition_ (__Kürzeste-Wege-Funktion__) Eine Funktion $\delta: V\to \mathbb{N}_{\geq 0}$ heißt Kürzeste-Wege-Funktion des Graphen $G$, wenn $\delta(v)=\min\{ \text{Pfadkosten von \(p\)} \mid \text{\(p\) Pfad von \(s\) nach \(v\)}\}$ für alle $v\in V$,
 
-# Überprüfung einer Kürzesten-Wege-Funktion
+
+## Zeugeneigenschaft
+
+### Überprüfung einer Kürzesten-Wege-Funktion
 
 Ein Algorithmus zur Lösung des Kürzesten-Pfade-Problems mit einer Quelle, wie beispielsweise der Dijkstra-Algorithmus, berechnet einen Spannbaum mit der Quelle als Wurzel. Der Weg von der Wurzel zu einem Knoten des Spannbaums, hat minimale Pfadkosten. Der Spannbaum ist nicht notwendigerweise eindeutig. Aus dem Spannbaum lässt sich jedoch eine eindeutige Funktion $D:V\to \mathbb{N}_{\geq 0}$ ableiten. Die Funktionswerte entsprechen den Pfadkosten eines kürzesten Pfades. Wir beschränken uns zunächst darauf, wie diese Funktion auf ihre Korrektheit überprüft werden kann. 
-
-# Zeugeneigenschaft
 
 Eine Funktion $D:V\to \mathbb{N}_{\geq 0}$ kann einfach darauf überprüft werden, ob sie eine Kürzeste-Wege-Funktion für den Graph $G$ ist. Dafür ist es hinreichend, $D$ auf drei Eigenschaften zu überprüfen. 
 Das heißt es bedarf zur Überprüfung der Ergebniskorrektheit, keines zusätzlichen mathematisches Artefakts, welches als Zeuge fungiert -- die Ausgabe zertifiziert sich gewissermaßen selbst.
@@ -66,7 +72,9 @@ Wir zeigen zwei Richtungen, die zusammen die Gleichheit belegen.
      was ein Widerspruch zur Annahme darstellt.
 \end{itemize}
 
-# Motivation
+# Verteilte Zeugeneigenschaft
+
+## Motivation
 
 Gemäß dem lokalen Ansatz, erfolgt die Überprüfung des verteilten Ergebnisses mithilfe lokal berechneter Zeugen durch lokale Checker. Wie kann das Ergebnis des verteilten Bellman-Ford-Algorithmus auf Korrektheit überprüft werden? Wir beobachten, dass zur Feststellung der Gültigkeit der Dreiecksungleichung und der Ausgleichseigenschaft, ausschließlich die Funktionswerte der Nachbarschaft benötigt werden. Die Feststellung der Starteigenschaft benötigt keine zusätzliche Information. Dies motiviert die Definition des lokalen Zeugen einer Komponente, als die Menge der berechneten Werte der Nachtbarschaft. Dieser wird vom  lokale Checker zur Teilüberprüfung des globalen Ergebnisses verwendet. Beispielsweise hält nach der Ausführung des zertifizierenden verteilten Bellman-Ford-Algorithmus auf dem Netzwerk aus Abbildung, die Komponente $e$ die Werte $y_b$ und $y_c$ als lokalen Zeugen. Der Checker der Komponente $e$ muss überprüfen, ob die Dreiecksungleichung und Ausgleichseigenschaft in der Nachbarschaft erfüllt sind. Die Überprüfung der Starteigenschaft entfällt, da $e$ nicht die Quelle ist. Zur Überprüfung der Dreiecksungleichung müssen die Ungleichungen $y_d \leq y_b +8$ und $y_d \leq y_c + 1$ überprüft werden. Weiterhin muss der lokale Checker zur Überprüfung der Ausgleichseigenschaft feststellen, ob eine der Ungleichung tatsächlich eine Gleichheit ist. Hier stellt er fest, dass $y_d = y_c + 1$.
 
