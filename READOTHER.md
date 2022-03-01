@@ -1,23 +1,20 @@
 # Repository
 
-Dieses Repository enthält die Coq-Formalisierung der formalen Insztanzkorrektheit der verteilten Überprüfung eines verteilten Netzwerkalgorithmus zur Berechnung kürzester Pfade und entstand im Rahmen meiner Diplomarbeit. Die Begriffe "Zeugeneigenschaft", "formale Insanzkorrektheit" und "verteilte Zeugeneigenschaft" werden im nächsten Abschnitt motiviert und anschließend sowohl für die seqeuentielle als auch für die verteilte Berechnung von kürzesten Pfaden definiert. Abschnitt 3 gibt einen groben Überblick über die Formalisierung. Der Beweis selbst folgt im Wesentlichen dem in Abschnitt 2.2.
+Dieses Repository enthält die Coq-Formalisierung der formalen Insztanzkorrektheit der verteilten Überprüfung eines verteilten Netzwerkalgorithmus zur Berechnung kürzester Pfade und entstand im Rahmen meiner Diplomarbeit. Die Begriffe "Zeugeneigenschaft", "formale Instanzkorrektheit" und "verteilte Zeugeneigenschaft" werden im nächsten Abschnitt motiviert und anschließend sowohl für die seqeuentielle als auch für die verteilte Berechnung von kürzesten Pfaden definiert. Abschnitt 3 gibt einen groben Überblick über die Formalisierung. Der Beweis selbst folgt im Wesentlichen dem in Abschnitt 2.2.
 
-# 1 Einleitung
-
-TODO Zeugeneigenschaft motivieren
+# 1. Einleitung
 
 Eine herausfordernde Aufgabe des Software Engineering ist es die Korrektheit eines Programms sicherzustellen. Bekannte Methoden sind das Testen und die formale Verifikation. Beim Testen wird für eine Stichprobe der möglichen Eingaben eines Programms gezeigt, dass es korrekt ist. Schwierig ist es hierbei eine möglichst repräsentative Stichprobe zu wählen. Für alle Eingaben außerhalb der Stichprobe erhalten wir keine Korrektheitsgarantie. Eine stärkere Korrektheitsgarantie erhalten wir bei der formalen Verifikation. Verifizieren wir ein Programm, so beweisen wir, dass es für alle Eingaben korrekt ist. Die formale Verifikation eines Programms ist jedoch oft zu aufwändig oder sogar unmöglich. Zum einen müssen wir die Korrektheit des Algorithmus zeigen, zum anderen müssen wir zeigen, dass er korrekt implementiert ist. Vor allem der Beweis der Korrektheit der Implementierung ist oft praktisch nicht durchführbar.
 
 Mehlhorn et. al. [[1]](#1) schlagen das Konzept des _zertifizierenden Algorithmus_ als weiteren Ansatz zur Qualitätssicherung von Software vor. Ein zertifizierender Algorithmus berechnet zu jedem Ergebnis, ein einfach zu überprüfendes Zertifikat, welches die Korrektheit des Ergebnisses impliziert. Der Benutzer eines zertifizierenden Algorithmus, kann sich anhand des Zertifikats von der Korrektheit des Ergebnisses überzeugen. Die Zertifikatsüberprüfung kann durch einen  Entscheidungsalgorithmus -- dem Checker erfolgen. Auf diese Weise kann der Benutzer Gewissheit über die Korrektheit des Ergebnisses erlangen, ohne dem Algorithmus vertrauen zu müssen. 
 
-Rizkallah [[2]](#2) entwickelt aufbauend auf dem Konzept des zertifizierenden Algorithmus, den Begriff der _formalen Instanzkorrektheit_. Die Idee ist es die Aussage "der Checker akzeptiert ein Zertifikat für ein Ergebnis genau dann, wenn das Ergebnis korrekt ist" mit Methoden der formalen Verifikation zu belegen. Der formale Beweise der Aussage erfolgt über zwei Schritte: Als erstes wird bewiesen, dass Zertifikate immer die Korrektheit eines Ergebnisses implizieren. Der nächste Schritt bildet der Korrektheitsbeweis der Checker-Implementation. Die Korrektheit des Ergebnisses ist damit -- bei Akzeptanz des Checkers -- durch einen maschinenüberprüfbaren Beweis abgesichert und so vertrauenswürdig, als wäre die Berechnung von einen formal verifizierten Algorithmus erfolgt.
+Rizkallah [[2]](#2) entwickelt aufbauend auf dem Konzept des zertifizierenden Algorithmus, den Begriff der _formalen Instanzkorrektheit_. Die Idee ist es die Aussage "der Checker akzeptiert ein Zertifikat für ein Ergebnis genau dann, wenn das Ergebnis korrekt ist" mit Methoden der formalen Verifikation zu belegen. Der formale Beweise der Aussage erfolgt über zwei Schritte: Als erstes wird die Zeugeneigenschaft bewiesen. Diese besagt, dass Zertifikate immer die Korrektheit eines Ergebnisses implizieren. Der nächste Schritt bildet der Korrektheitsbeweis der Checker-Implementation. Die Korrektheit des Ergebnisses ist damit -- bei Akzeptanz des Checkers -- durch einen maschinenüberprüfbaren Beweis abgesichert und so vertrauenswürdig, als wäre die Berechnung von einen formal verifizierten Algorithmus erfolgt.
 
-In [[3]](#3) veschreibt Völlinger, wie ein verteilter Netzwerkalgorithmus zur Berechnung kürzester Pfade, zertifizierend gestaltet werden kann. Jede Komponente des Netzwerks berechnet ein lokales Zertifikat, sodass alle lokalen Zertifikate zusammen die Korrektheit des verteilten Ergebnisses belegen. Die Überprüfung des verteilten Ergebnisses, erfolgt ebenfalls verteilt durch lokale Checker, welche jeder Komponente zugewiesen werden. Das verteilte Ergebnis ist genau dann korrekt, wenn alle lokalen Checker akzeptieren. Völlinger bezeichnet dieses Vorgehen als den _lokalen Ansatz_. 
+In [[3]](#3) veschreibt Völlinger, wie ein verteilter Netzwerkalgorithmus zur Berechnung kürzester Pfade, zertifizierend gestaltet werden kann. Jede Komponente des Netzwerks berechnet ein lokales Zertifikat, sodass alle lokalen Zertifikate zusammen die Korrektheit des verteilten Ergebnisses belegen. Diese Implikation heißt verteilte Zeugeneigenschaft. Die Überprüfung des verteilten Ergebnisses, erfolgt ebenfalls verteilt durch lokale Checker, welche jeder Komponente zugewiesen werden. Das verteilte Ergebnis ist genau dann korrekt, wenn alle lokalen Checker akzeptieren.
 
+# 2. Überprüfung einer Kürzesten-Wege-Funktion
 
-# 2 Überprüfung einer Kürzesten-Wege-Funktion
-
-## 2.1 Definitionen
+## 2.1. Definitionen
 
 Sei $G=(V,E,s)$ ein ungerichteter, zusammenhängender Graph mit einem ausgezeichneten Startknoten $s\in V$ und $c:E\to \mathbb{N}_{>0}$ eine Kantenbewertungsfunktion.
 
@@ -28,7 +25,7 @@ _Definition_ (__Pfadkosten__) Die Pfadkosten eines Pfades $p=(v_1,\ldots,v_n)$ e
 _Definition_ (__Kürzeste-Wege-Funktion__) Eine Funktion $\delta: V\to \mathbb{N}_{\geq 0}$ heißt Kürzeste-Wege-Funktion des Graphen $G$, wenn $\delta(v)=\min\{ \text{Pfadkosten von \(p\)} \mid \text{\(p\) Pfad von \(s\) nach \(v\)}\}$ für alle $v\in V$.
 
 
-## 2.2 Zeugeneigenschaft
+## 2.2. Zeugeneigenschaft
 
 Eine Funktion $D:V\to \mathbb{N}_{\geq 0}$ kann einfach darauf überprüft werden, ob sie eine Kürzeste-Wege-Funktion für den Graph $G$ ist. Dafür ist es hinreichend, $D$ auf drei Eigenschaften zu überprüfen. 
 Das heißt es bedarf zur Überprüfung der Ergebniskorrektheit, keines zusätzlichen mathematisches Artefakts, welches als Zeuge fungiert -- die Ausgabe zertifiziert sich gewissermaßen selbst.
@@ -74,11 +71,9 @@ Wir zeigen zwei Richtungen, die zusammen die Gleichheit belegen.
 
 Ein Algorithmus zur Lösung des Kürzesten-Pfade-Problems mit einer Quelle, wie beispielsweise der Dijkstra-Algorithmus, berechnet einen Spannbaum mit der Quelle als Wurzel. Der Weg von der Wurzel zu einem Knoten des Spannbaums, hat minimale Pfadkosten. Der Spannbaum ist nicht notwendigerweise eindeutig. Aus dem Spannbaum lässt sich jedoch eine eindeutige Funktion $D:V\to \mathbb{N}_{\geq 0}$ ableiten. Die Funktionswerte entsprechen den Pfadkosten eines kürzesten Pfades. Wir beschränken uns zunächst darauf, wie diese Funktion auf ihre Korrektheit überprüft werden kann. 
 
-# 2 Verteilte Überpfrüfung eines Kürzesten-Wege-Netzwerks
+# 2.3. Verteilte Überprüfung eines Kürzesten-Wege-Netzwerks
 
-## 2.1 Motivation
-
-Gemäß dem lokalen Ansatz, erfolgt die Überprüfung des verteilten Ergebnisses mithilfe lokal berechneter Zeugen durch lokale Checker. Wie kann das Ergebnis des verteilten Bellman-Ford-Algorithmus auf Korrektheit überprüft werden? Wir beobachten, dass zur Feststellung der Gültigkeit der Dreiecksungleichung und der Ausgleichseigenschaft, ausschließlich die Funktionswerte der Nachbarschaft benötigt werden. Die Feststellung der Starteigenschaft benötigt keine zusätzliche Information. Dies motiviert die Definition des lokalen Zeugen einer Komponente, als die Menge der berechneten Werte der Nachtbarschaft. Dieser wird vom  lokale Checker zur Teilüberprüfung des globalen Ergebnisses verwendet. Beispielsweise hält nach der Ausführung des zertifizierenden verteilten Bellman-Ford-Algorithmus auf dem Netzwerk aus Abbildung, die Komponente $e$ die Werte $y_b$ und $y_c$ als lokalen Zeugen. Der Checker der Komponente $e$ muss überprüfen, ob die Dreiecksungleichung und Ausgleichseigenschaft in der Nachbarschaft erfüllt sind. Die Überprüfung der Starteigenschaft entfällt, da $e$ nicht die Quelle ist. Zur Überprüfung der Dreiecksungleichung müssen die Ungleichungen $y_d \leq y_b +8$ und $y_d \leq y_c + 1$ überprüft werden. Weiterhin muss der lokale Checker zur Überprüfung der Ausgleichseigenschaft feststellen, ob eine der Ungleichung tatsächlich eine Gleichheit ist. Hier stellt er fest, dass $y_d = y_c + 1$.
+Wie kann das Ergebnis des verteilten Bellman-Ford-Algorithmus auf Korrektheit überprüft werden? Wir beobachten, dass zur Feststellung der Gültigkeit der Dreiecksungleichung und der Ausgleichseigenschaft, ausschließlich die Funktionswerte der Nachbarschaft benötigt werden. Die Feststellung der Starteigenschaft benötigt keine zusätzliche Information. Dies motiviert die Definition des lokalen Zeugen einer Komponente, als die Menge der berechneten Werte der Nachtbarschaft. Dieser wird vom  lokale Checker zur Teilüberprüfung des globalen Ergebnisses verwendet. Beispielsweise hält nach der Ausführung des zertifizierenden verteilten Bellman-Ford-Algorithmus auf dem Netzwerk aus Abbildung, die Komponente $e$ die Werte $y_b$ und $y_c$ als lokalen Zeugen. Der Checker der Komponente $e$ muss überprüfen, ob die Dreiecksungleichung und Ausgleichseigenschaft in der Nachbarschaft erfüllt sind. Die Überprüfung der Starteigenschaft entfällt, da $e$ nicht die Quelle ist. Zur Überprüfung der Dreiecksungleichung müssen die Ungleichungen $y_d \leq y_b +8$ und $y_d \leq y_c + 1$ überprüft werden. Weiterhin muss der lokale Checker zur Überprüfung der Ausgleichseigenschaft feststellen, ob eine der Ungleichung tatsächlich eine Gleichheit ist. Hier stellt er fest, dass $y_d = y_c + 1$.
 
 \begin{tikzpicture}%[every node/.style={fill,circle,inner sep=1pt}]
     \node [label=left:{$\{y_a \mapsto 0, y_c \mapsto 5\}$}] (D) at (-4.0, -1) [circle,draw] {$d$};
@@ -95,9 +90,9 @@ Gemäß dem lokalen Ansatz, erfolgt die Überprüfung des verteilten Ergebnisses
     \draw (B) to node[above] {$8$} (E);
 \end{tikzpicture}
 
-# 3 Coq-Formalisierung
+# 3. Coq-Formalisierung
 
-## 3.1 Sequentielle Zeugeneigenschaft
+## 3.1. Sequentielle Zeugeneigenschaft
 
 ```Coq
 Definition set n := { x : nat | x < n }.
@@ -131,6 +126,13 @@ Definition shortest_path (g : graph) (p : list (set g.(V)))
 ```
 
 ```Coq
+Lemma shortest_path_opt_substructure : forall u v p d, 
+  g.(E) u v > 0 ->
+    shortest_path g (v::u::p) v g.(s) (d + g.(E) u v) -> 
+      shortest_path g (u::p) u g.(s) d.
+``` 
+
+```Coq
 Variable dist : set g.(V) -> nat.
 
 Definition start_prop :=
@@ -156,9 +158,42 @@ intro v.
 Qed.
 ```
 
-## 3.2 Verteilte Zeugeneigenschaft
+## 4.2. Verteilte Zeugeneigenschaft
 
+```Coq
+Record component : Set := mk_component {
+  is_s  : bool;
+  i     : (set n);             
+  E_i   : (set n) -> nat
+}.
+```
 
+```Coq
+Definition local_start_prop (c : component) : Prop :=
+  dist c.(i) = 0.
+```
+
+```Coq
+Definition local_trian_prop (c : component) : Prop :=
+  forall j, c.(E_i) j > 0 -> dist c.(i) <= dist j + c.(E_i) j.
+```
+
+```Coq
+Definition local_justf_prop (c : component) : Prop :=
+  exists j, c.(E_i) j > 0 /\ dist c.(i) = dist j + c.(E_i) j.
+```
+
+```Coq
+Definition local_wtnss_prop (c : component) : Prop :=
+  (c.(is_s) = true -> local_start_prop c /\ local_trian_prop c) /\ 
+  (c.(is_s) = false -> local_trian_prop c /\ local_justf_prop c).
+```
+
+```Coq
+Theorem dist_eq_network_delta : forall (v : set network_g.(V)),
+  dist v = delta_network_g v.
+Proof.
+```
 
 # References
 <a id="1">[1]</a>
