@@ -1,4 +1,10 @@
+# Repository
+
+Dieses Repository enthält die Coq-Formalisierung der formalen Insztanzkorrektheit der verteilten Überprüfung eines verteilten Netzwerkalgorithmus zur Berechnung kürzester Pfade. Diese Formalisierung entstand im Rahmen meiner Diplomarbeit. Die Begriffe "Zeugeneigenschaft" , "formale Insanzkorrektheit" und "verteilte Zeugeneigenschaft" werden im nächsten Abschnitt motiviert. Weiterhin werden sie sowohl für die seqeuentielle als auch für die verteilte Berechnung von kürzesten Pfaden definiert.
+
 # Einleitung
+
+TODO Zeugeneigenschaft motivieren
 
 Eine herausfordernde Aufgabe des Software Engineering ist es die Korrektheit eines Programms sicherzustellen. Bekannte Methoden sind das Testen und die formale Verifikation. Beim Testen wird für eine Stichprobe der möglichen Eingaben eines Programms gezeigt, dass es korrekt ist. Schwierig ist es hierbei eine möglichst repräsentative Stichprobe zu wählen. Für alle Eingaben außerhalb der Stichprobe erhalten wir keine Korrektheitsgarantie. Eine stärkere Korrektheitsgarantie erhalten wir bei der formalen Verifikation. Verifizieren wir ein Programm, so beweisen wir, dass es für alle Eingaben korrekt ist. Die formale Verifikation eines Programms ist jedoch oft zu aufwändig oder sogar unmöglich. Zum einen müssen wir die Korrektheit des Algorithmus zeigen, zum anderen müssen wir zeigen, dass er korrekt implementiert ist. Vor allem der Beweis der Korrektheit der Implementierung ist oft praktisch nicht durchführbar.
 
@@ -8,10 +14,6 @@ Rizkallah [[2]](#2) entwickelt aufbauend auf dem Konzept des zertifizierenden Al
 
 In [[3]](#3) veschreibt Völlinger, wie ein verteilter Netzwerkalgorithmus zur Berechnung kürzester Pfade, zertifizierend gestaltet werden kann. Jede Komponente des Netzwerks berechnet ein lokales Zertifikat, sodass alle lokalen Zertifikate zusammen die Korrektheit des verteilten Ergebnisses belegen. Die Überprüfung des verteilten Ergebnisses, erfolgt ebenfalls verteilt durch lokale Checker, welche jeder Komponente zugewiesen werden. Das verteilte Ergebnis ist genau dann korrekt, wenn alle lokalen Checker akzeptieren. Völlinger bezeichnet dieses Vorgehen als den _lokalen Ansatz_. 
 
-
-# Repository
-
-Dieses Repository enthält die Coq-Formalisierung der formlalen Insztanzkorrektheit der verteilten Überprüfung eines verteilten Netzwerkalgorithmus zur Berechnung kürzester Pfade. Die Abschnitte "Zeugeneigenschaft" und "Verteilte Zeugeneigenschaft" enthalten im Wesentlichen die Beweise, welche hier in Coq formalisiert wurden.
 
 # Überprüfung einer Kürzesten-Wege-Funktion
 
@@ -23,7 +25,7 @@ _Definition_ (__Pfad__) Ein Pfad $p$ von einem Knoten $s\in V$ zu einem Knoten $
 
 _Definition_ (__Pfadkosten__) Die Pfadkosten eines Pfades $p=(v_1,\ldots,v_n)$ entsprechen der Summe der Kantengewichte entlang des Pfades, also dem Wert $\sum_{1\leq i \leq n -1 } c\left(\{v_i,v_{i+1}\}\right)$.
 
-_Definition_ (__Kürzeste-Wege-Funktion__) Eine Funktion $\delta: V\to \mathbb{N}_{\geq 0}$ heißt Kürzeste-Wege-Funktion des Graphen $G$, wenn $\delta(v)=\min\{ \text{Pfadkosten von \(p\)} \mid \text{\(p\) Pfad von \(s\) nach \(v\)}\}$ für alle $v\in V$,
+_Definition_ (__Kürzeste-Wege-Funktion__) Eine Funktion $\delta: V\to \mathbb{N}_{\geq 0}$ heißt Kürzeste-Wege-Funktion des Graphen $G$, wenn für alle $v\in V$ $\delta(v)=\min\{ \text{Pfadkosten von \(p\)} \mid \text{\(p\) Pfad von \(s\) nach \(v\)}\}$.
 
 
 ## Zeugeneigenschaft
@@ -93,32 +95,77 @@ Gemäß dem lokalen Ansatz, erfolgt die Überprüfung des verteilten Ergebnisses
     \draw (B) to node[above] {$8$} (E);
 \end{tikzpicture}
 
-\begin{lstlisting}
+# Coq-Formalisierung
+
+## Sequentielle Zeugeneigenschaft
+
+```Coq
 Definition set n := { x : nat | x < n }.
-\end{lstlisting}  
+```
 
+Mit der Formalisierung von Knoten als Terme vom Typ `set n`, definieren wir auf folgende Weise den Record `graph`, zur Repräsentation eines endlichen, gewichteten Graphen:
 
-
-Mit der Formalisierung von Knoten als Terme vom Typ \lstinline|set n|, definieren wir auf folgende Weise den Record \lstinline|graph|, zur Repräsentation eines endlichen, gewichteten Graphen:
-
-\begin{lstlisting}
+```Coq
 Record graph : Set := mk_graph {
   V : nat;
   E : (set V) -> (set V) -> nat;
   s : (set V)
 }.
-\end{lstlisting}
+```
+
+```Coq
+Inductive path (g : graph) : 
+  list (set g.(V)) -> set g.(V) -> set g.(V) -> nat -> Prop :=
+| zerop : forall v,
+    path g (v::nil) v v 0 
+| consp : forall u v, 
+    g.(E) u v > 0 ->
+      forall p sv d, path g (u::p) u sv d ->
+        path g (v::u::p) v sv (d + g.(E) u v).
+```
+
+```Coq
+Definition shortest_path (g : graph) (p : list (set g.(V))) 
+  (v sv : set g.(V)) (d : nat) : Prop :=
+    path g p v sv d /\ forall p' d', path g p' v sv d' -> d <= d'.
+```
+
+```Coq
+Variable dist : set g.(V) -> nat.
+
+Definition start_prop :=
+  dist g.(s) = 0.
+Definition trian_prop := forall u v, 
+  g.(E) u v > 0 -> dist v <= dist u + g.(E) u v.
+Definition justf_prop := forall v,
+  v <> g.(s) -> exists u, g.(E) u v > 0 /\ dist v = dist u + g.(E) u v.
+```
+
+```Coq
+Hypothesis Hstart_prop : start_prop.
+Hypothesis Htrian_prop : trian_prop.
+Hypothesis Hjustf_prop : justf_prop.
+
+Theorem witness_prop : forall v,
+  dist v = delta v.
+Proof.
+intro v.
+  apply le_antisym.
+  apply dist_leq_delta.
+  apply dist_geq_delta.
+Qed.
+```
+
+## Verteilte Zeugeneigenschaft
+
+
 
 # References
 <a id="1">[1]</a>
-R.M. McConnell, K. Mehlhorn, S. Näher und P. Schweitzer: Certifying
-algorithms. Computer Science Review, 5(2):119 – 161, 2011.
+R.M. McConnell, K. Mehlhorn, S. Näher und P. Schweitzer: Certifying algorithms. Computer Science Review, 5(2):119 – 161, 2011.
 
 <a id="2">[2]</a>
-Christine Rizkallah: Verification of Program Computations. Dissertation,
-Universität des Saarlandes, Saarbrücken, 2015.
+Christine Rizkallah: Verification of Program Computations. Dissertation, Universität des Saarlandes, Saarbrücken, 2015.
 
 <a id="3">[3]</a>
-Kim Völlinger und Wolfgang Reisig: Certifcation of Distributed Algorithms
-Solving Problems with Optimal Substructure. In: Software Engineering and
-Formal Methods, 2015.
+Kim Völlinger und Wolfgang Reisig: Certifcation of Distributed Algorithms Solving Problems with Optimal Substructure. In: Software Engineering and Formal Methods, 2015.
