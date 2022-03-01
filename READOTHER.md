@@ -1,8 +1,8 @@
 # Repository
 
-Dieses Repository enthält die Coq-Formalisierung der formalen Insztanzkorrektheit der verteilten Überprüfung eines verteilten Netzwerkalgorithmus zur Berechnung kürzester Pfade. Diese Formalisierung entstand im Rahmen meiner Diplomarbeit. Die Begriffe "Zeugeneigenschaft" , "formale Insanzkorrektheit" und "verteilte Zeugeneigenschaft" werden im nächsten Abschnitt motiviert. Weiterhin werden sie sowohl für die seqeuentielle als auch für die verteilte Berechnung von kürzesten Pfaden definiert.
+Dieses Repository enthält die Coq-Formalisierung der formalen Insztanzkorrektheit der verteilten Überprüfung eines verteilten Netzwerkalgorithmus zur Berechnung kürzester Pfade und entstand im Rahmen meiner Diplomarbeit. Die Begriffe "Zeugeneigenschaft", "formale Insanzkorrektheit" und "verteilte Zeugeneigenschaft" werden im nächsten Abschnitt motiviert und anschließend sowohl für die seqeuentielle als auch für die verteilte Berechnung von kürzesten Pfaden definiert. Abschnitt 3 gibt einen groben Überblick über die Formalisierung. Der Beweis selbst folgt im Wesentlichen dem in Abschnitt 2.2.
 
-# Einleitung
+# 1 Einleitung
 
 TODO Zeugeneigenschaft motivieren
 
@@ -15,9 +15,9 @@ Rizkallah [[2]](#2) entwickelt aufbauend auf dem Konzept des zertifizierenden Al
 In [[3]](#3) veschreibt Völlinger, wie ein verteilter Netzwerkalgorithmus zur Berechnung kürzester Pfade, zertifizierend gestaltet werden kann. Jede Komponente des Netzwerks berechnet ein lokales Zertifikat, sodass alle lokalen Zertifikate zusammen die Korrektheit des verteilten Ergebnisses belegen. Die Überprüfung des verteilten Ergebnisses, erfolgt ebenfalls verteilt durch lokale Checker, welche jeder Komponente zugewiesen werden. Das verteilte Ergebnis ist genau dann korrekt, wenn alle lokalen Checker akzeptieren. Völlinger bezeichnet dieses Vorgehen als den _lokalen Ansatz_. 
 
 
-# Überprüfung einer Kürzesten-Wege-Funktion
+# 2 Überprüfung einer Kürzesten-Wege-Funktion
 
-## Definitionen
+## 2.1 Definitionen
 
 Sei $G=(V,E,s)$ ein ungerichteter, zusammenhängender Graph mit einem ausgezeichneten Startknoten $s\in V$ und $c:E\to \mathbb{N}_{>0}$ eine Kantenbewertungsfunktion.
 
@@ -25,10 +25,10 @@ _Definition_ (__Pfad__) Ein Pfad $p$ von einem Knoten $s\in V$ zu einem Knoten $
 
 _Definition_ (__Pfadkosten__) Die Pfadkosten eines Pfades $p=(v_1,\ldots,v_n)$ entsprechen der Summe der Kantengewichte entlang des Pfades, also dem Wert $\sum_{1\leq i \leq n -1 } c\left(\{v_i,v_{i+1}\}\right)$.
 
-_Definition_ (__Kürzeste-Wege-Funktion__) Eine Funktion $\delta: V\to \mathbb{N}_{\geq 0}$ heißt Kürzeste-Wege-Funktion des Graphen $G$, wenn für alle $v\in V$ $\delta(v)=\min\{ \text{Pfadkosten von \(p\)} \mid \text{\(p\) Pfad von \(s\) nach \(v\)}\}$.
+_Definition_ (__Kürzeste-Wege-Funktion__) Eine Funktion $\delta: V\to \mathbb{N}_{\geq 0}$ heißt Kürzeste-Wege-Funktion des Graphen $G$, wenn $\delta(v)=\min\{ \text{Pfadkosten von \(p\)} \mid \text{\(p\) Pfad von \(s\) nach \(v\)}\}$ für alle $v\in V$.
 
 
-## Zeugeneigenschaft
+## 2.2 Zeugeneigenschaft
 
 Eine Funktion $D:V\to \mathbb{N}_{\geq 0}$ kann einfach darauf überprüft werden, ob sie eine Kürzeste-Wege-Funktion für den Graph $G$ ist. Dafür ist es hinreichend, $D$ auf drei Eigenschaften zu überprüfen. 
 Das heißt es bedarf zur Überprüfung der Ergebniskorrektheit, keines zusätzlichen mathematisches Artefakts, welches als Zeuge fungiert -- die Ausgabe zertifiziert sich gewissermaßen selbst.
@@ -74,9 +74,9 @@ Wir zeigen zwei Richtungen, die zusammen die Gleichheit belegen.
 
 Ein Algorithmus zur Lösung des Kürzesten-Pfade-Problems mit einer Quelle, wie beispielsweise der Dijkstra-Algorithmus, berechnet einen Spannbaum mit der Quelle als Wurzel. Der Weg von der Wurzel zu einem Knoten des Spannbaums, hat minimale Pfadkosten. Der Spannbaum ist nicht notwendigerweise eindeutig. Aus dem Spannbaum lässt sich jedoch eine eindeutige Funktion $D:V\to \mathbb{N}_{\geq 0}$ ableiten. Die Funktionswerte entsprechen den Pfadkosten eines kürzesten Pfades. Wir beschränken uns zunächst darauf, wie diese Funktion auf ihre Korrektheit überprüft werden kann. 
 
-# Verteilte Überpfrüfung eines Kürzesten-Wege-Netzwerks
+# 2 Verteilte Überpfrüfung eines Kürzesten-Wege-Netzwerks
 
-## Motivation
+## 2.1 Motivation
 
 Gemäß dem lokalen Ansatz, erfolgt die Überprüfung des verteilten Ergebnisses mithilfe lokal berechneter Zeugen durch lokale Checker. Wie kann das Ergebnis des verteilten Bellman-Ford-Algorithmus auf Korrektheit überprüft werden? Wir beobachten, dass zur Feststellung der Gültigkeit der Dreiecksungleichung und der Ausgleichseigenschaft, ausschließlich die Funktionswerte der Nachbarschaft benötigt werden. Die Feststellung der Starteigenschaft benötigt keine zusätzliche Information. Dies motiviert die Definition des lokalen Zeugen einer Komponente, als die Menge der berechneten Werte der Nachtbarschaft. Dieser wird vom  lokale Checker zur Teilüberprüfung des globalen Ergebnisses verwendet. Beispielsweise hält nach der Ausführung des zertifizierenden verteilten Bellman-Ford-Algorithmus auf dem Netzwerk aus Abbildung, die Komponente $e$ die Werte $y_b$ und $y_c$ als lokalen Zeugen. Der Checker der Komponente $e$ muss überprüfen, ob die Dreiecksungleichung und Ausgleichseigenschaft in der Nachbarschaft erfüllt sind. Die Überprüfung der Starteigenschaft entfällt, da $e$ nicht die Quelle ist. Zur Überprüfung der Dreiecksungleichung müssen die Ungleichungen $y_d \leq y_b +8$ und $y_d \leq y_c + 1$ überprüft werden. Weiterhin muss der lokale Checker zur Überprüfung der Ausgleichseigenschaft feststellen, ob eine der Ungleichung tatsächlich eine Gleichheit ist. Hier stellt er fest, dass $y_d = y_c + 1$.
 
@@ -95,9 +95,9 @@ Gemäß dem lokalen Ansatz, erfolgt die Überprüfung des verteilten Ergebnisses
     \draw (B) to node[above] {$8$} (E);
 \end{tikzpicture}
 
-# Coq-Formalisierung
+# 3 Coq-Formalisierung
 
-## Sequentielle Zeugeneigenschaft
+## 3.1 Sequentielle Zeugeneigenschaft
 
 ```Coq
 Definition set n := { x : nat | x < n }.
@@ -115,7 +115,7 @@ Record graph : Set := mk_graph {
 
 ```Coq
 Inductive path (g : graph) : 
-  list (set g.(V)) -> set g.(V) -> set g.(V) -> nat -> Prop :=
+   list (set g.(V)) -> set g.(V) -> set g.(V) -> nat -> Prop :=
 | zerop : forall v,
     path g (v::nil) v v 0 
 | consp : forall u v, 
@@ -156,7 +156,7 @@ intro v.
 Qed.
 ```
 
-## Verteilte Zeugeneigenschaft
+## 3.2 Verteilte Zeugeneigenschaft
 
 
 
