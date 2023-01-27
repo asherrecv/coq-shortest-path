@@ -156,7 +156,6 @@ Definition local_start_prop (c : component) : Prop :=
 Definition local_trian_prop (c : component) : Prop :=
   forall j, c.(E_i) j > 0 -> dist c.(i) <= dist j + c.(E_i) j.
 
-```Coq
 Definition local_justf_prop (c : component) : Prop :=
   exists j, c.(E_i) j > 0 /\ dist c.(i) = dist j + c.(E_i) j.
 
